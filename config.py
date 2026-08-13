@@ -1,0 +1,76 @@
+"""Hardware assignments and tunable settings for R3ptar programs."""
+
+from pybricks.parameters import Port
+
+
+# Hardware ports shared by the autonomous and dance programs.
+INFRARED_SENSOR_PORT = Port.S4
+HEAD_TURN_MOTOR_PORT = Port.A
+DRIVE_MOTOR_PORT = Port.B
+HEAD_BEND_MOTOR_PORT = Port.D
+
+# Autonomous movement and reaction tuning.
+OBSTACLE_DISTANCE = 45  # Infrared distance: 0 is closest, 100 is farthest.
+OBSTACLE_CONFIRMATIONS = 2
+MOVE_SPEED = 500
+AUTONOMOUS_HEAD_TURN_SPEED = 250
+HEAD_TURN_LIMIT = 50
+BITE_SPEED = 700
+BITE_DIRECTION = -1
+
+# All times are milliseconds.
+LOOK_TIME_MIN = 1600
+LOOK_TIME_MAX = 3400
+CURIOUS_MOVE_TIME_MIN = 180
+CURIOUS_MOVE_TIME_MAX = 320
+ALERT_TIME_MIN = 200
+ALERT_TIME_MAX = 450
+ALERT_GLANCE_TIME_MIN = 120
+ALERT_GLANCE_TIME_MAX = 260
+BITE_FORWARD_TIME = 250
+BITE_RETURN_TIME = 250
+BACK_AWAY_TIME_MIN = 700
+BACK_AWAY_TIME_MAX = 1100
+ESCAPE_BACKUP_BONUS = 250
+ESCAPE_SCAN_TIME = 350
+ROLLBACK_TIME_MIN = 450
+ROLLBACK_TIME_MAX = 750
+ROLLBACK_INTERVAL_MIN = 14000
+ROLLBACK_INTERVAL_MAX = 24000
+REACTION_COOLDOWN = 1200
+FORWARD_PROGRESS_TIME = 1800
+MIN_FORWARD_PROGRESS = 120
+SOUND_PROGRESS_GRACE = 3500
+MAX_ESCAPE_LEVEL = 3
+RATTLE_TIME_MIN = 9000
+RATTLE_TIME_MAX = 19000
+LOOP_DELAY = 50
+
+# Coarse map tuning. One cell is approximately this much drive-motor rotation.
+MAP_SIZE = 17
+MAP_CELL_MOTOR_DEGREES = 900
+MAX_MAP_VALUE = 15
+
+# Dance tune and movement tuning.
+MELODY = (
+    (262, 250),
+    (330, 250),
+    (392, 250),
+    (330, 250),
+    (294, 250),
+    (349, 250),
+    (440, 250),
+    (349, 250),
+    (330, 250),
+    (392, 250),
+    (523, 250),
+    (392, 250),
+    (392, 250),
+    (330, 250),
+    (294, 250),
+    (262, 250),
+)
+DANCE_HEAD_TURN_SPEED = 300
+HEAD_TURN_ANGLE = 35
+BODY_DANCE_SPEED = 180
+DANCE_REPEATS = 2
