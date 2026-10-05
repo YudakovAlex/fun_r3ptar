@@ -28,15 +28,9 @@ The map is deliberately small and simple: it is R3ptar's rough memory of the cur
 | [`basic.py`](basic.py) | A smaller, beginner-friendly autonomous program to read and remix first |
 | [`config.py`](config.py) | Motor ports, speeds, timings, map size, and the dance melody |
 
-## What you need
+## Setup
 
-- A built LEGO MINDSTORMS EV3 **R3ptar**
-- An EV3 Brick running EV3 MicroPython
-- A microSD card and mini-USB cable for the EV3 setup
-- Visual Studio Code with the **LEGO MINDSTORMS EV3 MicroPython** extension
-- A clear patch of floor for snake business
-
-New to EV3 MicroPython? Follow the official [Pybricks EV3 installation guide](https://pybricks.com/install/mindstorms-ev3/installation/) before continuing.
+Follow the [shared EV3 setup and connection instructions](../README.md#shared-ev3-setup), then check the wiring and starting position below.
 
 ## Plug in the creature
 
@@ -53,20 +47,9 @@ Before starting a program, physically point R3ptar's head straight ahead and pla
 
 ## Wake the snake
 
-1. Clone this repository and open the folder in Visual Studio Code.
+Make sure R3ptar is centered, resting, and sitting on the floor with room to move. Select **Download and Run** in VS Code's Run and Debug menu, then press `F5` to launch `R3ptar/main.py`.
 
-   ```bash
-   git clone https://github.com/YudakovAlex/fun_r3ptar.git
-   cd fun_r3ptar
-   ```
-
-2. Turn on the EV3 Brick and connect it to your computer.
-3. Make sure R3ptar is centered, resting, and sitting on the floor with room to move.
-4. Press `F5` in Visual Studio Code to download and run `main.py`.
-
-That is it. R3ptar should begin exploring on its own.
-
-To run a different adventure, change `main.py` in [`.vscode/launch.json`](.vscode/launch.json) to `dance.py` or `basic.py`, then press `F5` again. The [Pybricks running-programs guide](https://pybricks.com/install/mindstorms-ev3/running-programs/) has more help with connecting, downloading, and launching EV3 code.
+See the [shared download and run instructions](../README.md#download-and-run) to run `dance.py` or `basic.py` instead.
 
 ## Turn the personality knobs
 
@@ -103,6 +86,7 @@ There is plenty here to learn from: sensors, motors, sound, timing, random behav
 The tests use pretend motors, sensors, and speakers, so they can run on a regular computer with Python 3:
 
 ```bash
+cd R3ptar
 python3 -m unittest discover -s tests -v
 ```
 

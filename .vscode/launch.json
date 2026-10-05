@@ -8,7 +8,14 @@
 			"name": "Download and Run",
 			"type": "ev3devBrowser",
 			"request": "launch",
-			"program": "/home/robot/${workspaceRootFolderName}/main.py",
+			"program": "/home/robot/${workspaceRootFolderName}/R3ptar/main.py",
+			"interactiveTerminal": false
+		},
+		{
+			"name": "Robodoz3r: Download and Run",
+			"type": "ev3devBrowser",
+			"request": "launch",
+			"program": "/home/robot/${workspaceRootFolderName}/Robodoz3r/main.py",
 			"interactiveTerminal": false
 		}
 	]
