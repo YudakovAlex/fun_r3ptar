@@ -46,6 +46,13 @@ This autonomous program does not use the remote or touch sensor.
    finish, or use its normal program-stop
    control. The program brakes all three motors when it exits or raises an error.
 
+To dance once without cruising, change the Robodoz3r configuration's `program`
+in [`.vscode/launch.json`](../.vscode/launch.json) to end in
+`Robodoz3r/dance.py`, then press `F5`. Use the same wiring and starting blade
+position. The standalone dance brakes all motors when it finishes, detects an
+obstacle, or receives a new center-button press. `main.py` continues to import
+the same routine for its periodic dance breaks.
+
 Keep it away from edges and stairs: the forward infrared sensor cannot detect
 drop-offs or obstacles behind it. The program does not detect jammed motors.
 

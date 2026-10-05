@@ -1,4 +1,5 @@
 import importlib
+import runpy
 import sys
 import types
 import unittest
@@ -219,6 +220,82 @@ class DozerTests(unittest.TestCase):
         self.assertEqual(self.behavior.state, robot.CRUISING)
         self.assertEqual((self.left.speed, self.right.speed), (robot.DRIVE_SPEED,) * 2)
         self.assertEqual(self.blade.speed, 0)
+
+    def run_standalone_dance(self):
+        self.now = 0
+
+        def tick(duration):
+            self.now += duration
+            for motor in self.motors:
+                motor.tick(duration)
+
+        with (
+            patch.dict(sys.modules, {"main": robot}),
+            patch.object(robot.dance, "EV3Brick", return_value=self.brick),
+            patch.object(robot.dance, "InfraredSensor", return_value=self.sensor),
+            patch.object(robot.dance, "Motor", side_effect=self.motors) as motor_type,
+            patch.object(robot.dance, "StopWatch") as timer,
+            patch.object(robot.dance, "wait", side_effect=tick),
+        ):
+            timer.return_value.time.side_effect = lambda: self.now
+            robot.dance.main()
+        return motor_type.call_args_list
+
+    def test_dance_file_runs_as_a_program(self):
+        self.sensor.distance.return_value = 55
+        self.brick.buttons.pressed.return_value = []
+        with (
+            patch.dict(sys.modules, dict(modules, main=robot)),
+            patch.object(modules["pybricks.hubs"], "EV3Brick", return_value=self.brick),
+            patch.object(modules["pybricks.ev3devices"], "InfraredSensor", return_value=self.sensor),
+            patch.object(modules["pybricks.ev3devices"], "Motor", side_effect=self.motors),
+        ):
+            runpy.run_path(robot.dance.__file__, run_name="__main__")
+        self.assertTrue(all(motor.commands[-1] == ("brake",) for motor in self.motors))
+
+    def test_standalone_dance_finishes_once_and_brakes(self):
+        self.brick.speaker.beep.reset_mock()
+        self.brick.screen.print.reset_mock()
+        self.brick.buttons.pressed.side_effect = lambda: (
+            [robot.Button.CENTER] if self.now < 100 else []
+        )
+        wiring = self.run_standalone_dance()
+        self.assertEqual([call.args[0] for call in wiring], ["C", "B", "A"])
+        self.assertEqual(
+            [call.kwargs["positive_direction"] for call in wiring],
+            [parameters.Direction.COUNTERCLOCKWISE,
+             parameters.Direction.COUNTERCLOCKWISE, parameters.Direction.CLOCKWISE],
+        )
+        self.assertEqual(self.brick.speaker.beep.call_count, 48)
+        messages = [call.args[0] for call in self.brick.screen.print.call_args_list]
+        for section, unused in robot.dance.DANCE_ROUTINE:
+            self.assertEqual(messages.count(section), 8)
+        self.assertEqual(self.now, 48 * robot.dance.DANCE_BEAT_TIME)
+        self.assertEqual(self.blade.angle(), 0)
+        self.assertTrue(all(motor.commands[-1] == ("brake",) for motor in self.motors))
+
+    def test_standalone_dance_stops_on_button_obstacle_or_failure(self):
+        for reason in ("button", "obstacle", "speaker", "sensor"):
+            with self.subTest(reason=reason):
+                self.brick.speaker.beep.reset_mock()
+                self.brick.speaker.beep.side_effect = (
+                    RuntimeError("speaker") if reason == "speaker" else None
+                )
+                self.brick.buttons.pressed.side_effect = lambda: (
+                    [robot.Button.CENTER] if reason == "button" and self.now >= 100 else []
+                )
+                self.sensor.distance.side_effect = (
+                    OSError("sensor") if reason == "sensor" else
+                    lambda: 55 if reason == "obstacle" and self.now >= 100 else 100
+                )
+                if reason in ("speaker", "sensor"):
+                    with self.assertRaisesRegex((RuntimeError, OSError), reason):
+                        self.run_standalone_dance()
+                else:
+                    self.run_standalone_dance()
+                    self.assertEqual(self.now, 100)
+                    self.assertEqual(self.brick.speaker.beep.call_count, 1)
+                self.assertTrue(all(motor.commands[-1] == ("brake",) for motor in self.motors))
 
     def test_main_wiring_and_center_button_shutdown(self):
         self.brick.buttons.pressed.side_effect = [[], [robot.Button.CENTER]]
